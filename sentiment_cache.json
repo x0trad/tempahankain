@@ -1,0 +1,45 @@
+{
+  "politician": "Fahmi Fadzil",
+  "party": "PKR",
+  "coalition": "PH",
+  "last_updated": "2026-06-18T12:02:07.778250",
+  "overall": {
+    "politician": "Fahmi Fadzil",
+    "party": "PKR",
+    "coalition": "PH",
+    "last_updated": "2026-06-18T12:02:07.778166",
+    "total_articles": 1,
+    "average_score": -75.0,
+    "positive": 0,
+    "negative": 1,
+    "neutral": 0,
+    "positive_pct": 0,
+    "negative_pct": 100,
+    "neutral_pct": 0,
+    "overall_sentiment": "negative"
+  },
+  "articles": [
+    {
+      "title": "Albert Tei ups pressure on 'coward' Fahmi, demands explanation for TikTok account removals",
+      "summary": "The businessman-turned-activist has made four attempts to meet Fahmi Fadzil but says the minister has avoided him.",
+      "link": "https://www.malaysianow.com/news/2026/06/09/albert-tei-ups-pressure-on-coward-fahmi-demands-explanation-for-tiktok-account-removals",
+      "source": "Malaysia Now",
+      "icon": "📰",
+      "published": "Tue, 09 Jun 2026 06:53:00 GMT",
+      "scanned_at": "2026-06-18T12:01:35.632567",
+      "sentiment": {
+        "sentiment": "negative",
+        "score": -75,
+        "confidence": 90,
+        "topics": [
+          "TikTok account removals",
+          "social media regulation",
+          "minister accountability",
+          "censorship"
+        ],
+        "summary": "Aktivis Albert Tei mengecam Menteri Komunikasi Fahmi Fadzil sebagai pengecut dan menuntut penjelasan berhubung pemadaman akaun TikTok.",
+        "impact": "medium"
+      }
+    }
+  ]
+}
