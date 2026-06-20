@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tempahan Kain - Borang Pesanan</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f3ee;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    color: #2d2a24;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #6b6560;
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .ref-image {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: block;
+  }
+  .price-card {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .price-item {
+    background: white;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .price-item strong {
+    display: block;
+    font-size: 15px;
+    color: #1a1a1a;
+  }
+  .order-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    border-left: 4px solid #c8a97e;
+  }
+  .order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .order-number {
+    font-weight: 600;
+    font-size: 14px;
+    color: #2d2a24;
+  }
+  .remove-btn {
+    background: none;
+    border: none;
+    color: #c0392b;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .remove-btn:hover { background: #fde8e8; }
+  .form-group { margin-bottom: 12px; }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4a4540;
+    margin-bottom: 4px;
+  }
+  input[type="text"], input[type="number"], select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #ddd8d0;
+    border-radius: 8px;
+    font-size: 15px;
+    background: #fafaf8;
+    transition: border-color 0.2s;
+  }
+  select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6560' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: #c8a97e;
+    box-shadow: 0 0 0 3px rgba(200,169,126,0.15);
+  }
+  .field-hint {
+    font-size: 11px;
+    color: #9a9490;
+    margin-top: 3px;
+    font-style: italic;
+  }
+  /* Size Chart */
+  .size-chart-toggle {
+    background: #2d2a24;
+    color: #c8a97e;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 12px 0;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .size-chart-toggle:hover { background: #1a1814; }
+  .size-chart-section {
+    background: #fafaf8;
+    border: 1.5px solid #ddd8d0;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .size-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .size-tab {
+    flex: 1;
+    padding: 8px;
+    border: 1.5px solid #ddd8d0;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b6560;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .size-tab.active {
+    background: #2d2a24;
+    color: #c8a97e;
+    border-color: #2d2a24;
+  }
+  .size-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .size-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    min-width: 480px;
+  }
+  .size-table th {
+    background: #2d2a24;
+    color: #c8a97e;
+    padding: 8px 6px;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid #3a3530;
+  }
+  .size-table td {
+    padding: 7px 6px;
+    text-align: center;
+    border: 1px solid #e0ddd5;
+    color: #2d2a24;
+  }
+  .size-table td:first-child {
+    font-weight: 600;
+    text-align: left;
+    background: #f5f3ef;
+    white-space: nowrap;
+  }
+  .size-table tbody tr:nth-child(even) td {
+    background: #faf9f7;
+  }
+  /* Guideline Meter Kain */
+  .guideline-card {
+    background: #2d2a24;
+    border-radius: 10px;
+    padding: 16px;
+    color: #fff;
+  }
+  .guideline-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #c8a97e;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .guideline-block {
+    margin-bottom: 12px;
+  }
+  .guideline-block:last-child {
+    margin-bottom: 0;
+  }
+  .guideline-cat {
+    font-size: 13px;
+    font-weight: 600;
+    color: #c8a97e;
+    margin-bottom: 6px;
+  }
+  .guideline-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 12px;
+    font-size: 13px;
+    color: #e0ddd5;
+    border-bottom: 1px solid #3a3530;
+  }
+  .guideline-row:last-child {
+    border-bottom: none;
+  }
+  .guideline-val {
+    font-weight: 600;
+    color: #c8a97e;
+  }
+  /* Payment & Disclaimer */
+  .payment-card {
+    background: #2d2a24;
+    border-radius: 10px;
+    padding: 16px;
+    margin: 16px 0 12px;
+    color: #fff;
+  }
+  .payment-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #c8a97e;
+    margin-bottom: 8px;
+  }
+  .payment-note {
+    font-size: 12px;
+    color: #b8b0a8;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+  .payment-details {
+    background: #1a1814;
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .payment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #3a3530;
+    font-size: 13px;
+  }
+  .payment-row:last-child { border-bottom: none; }
+  .payment-label {
+    color: #9a9490;
+    font-weight: 600;
+  }
+  .payment-val {
+    color: #e0ddd5;
+    font-weight: 600;
+    text-align: right;
+  }
+  .payment-copy {
+    color: #c8a97e;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .payment-copy:hover { opacity: 0.7; }
+  .disclaimer-card {
+    background: #faf5f0;
+    border: 1px solid #e8dfd0;
+    border-left: 4px solid #c8a97e;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #6b6560;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  /* Slip Upload */
+  .slip-upload-section {
+    margin: 16px 0;
+  }
+  .slip-upload-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d2a24;
+    margin-bottom: 6px;
+  }
+  .slip-upload-area {
+    border: 2px dashed #ddd8d0;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: #fafaf8;
+  }
+  .slip-upload-area:hover {
+    border-color: #c8a97e;
+    background: #f5f0e8;
+  }
+  /* Size fields */
+  .size-fields {
+    margin: 12px 0;
+  }
+  .size-row {
+    display: flex;
+    gap: 10px;
+  }
+  .size-col {
+    flex: 1;
+  }
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1.5px solid #ddd8d0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fafaf8;
+  }
+  .radio-option:hover { border-color: #c8a97e; }
+  .radio-option.selected {
+    border-color: #c8a97e;
+    background: #f5efe6;
+  }
+  .radio-option input[type="radio"] {
+    accent-color: #c8a97e;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .radio-option .price-tag {
+    margin-left: auto;
+    font-weight: 600;
+    color: #2d2a24;
+    font-size: 15px;
+  }
+  .radio-option .desc {
+    font-size: 12px;
+    color: #6b6560;
+  }
+  .meter-field {
+    margin-top: 10px;
+    padding: 12px;
+    background: #f5efe6;
+    border-radius: 8px;
+    display: none;
+  }
+  .meter-field.visible { display: block; }
+  .meter-field label {
+    font-size: 13px;
+    color: #2d2a24;
+    margin-bottom: 6px;
+  }
+  .meter-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .meter-row input { flex: 1; }
+  .calc-breakdown {
+    font-size: 13px;
+    color: #4a4540;
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+  .calc-breakdown .total-line {
+    font-weight: 600;
+    color: #2d2a24;
+    font-size: 15px;
+  }
+  .order-total {
+    text-align: right;
+    font-size: 14px;
+    color: #4a4540;
+    padding: 4px 0;
+  }
+  .order-total strong {
+    font-size: 18px;
+    color: #2d2a24;
+  }
+  .grand-total {
+    background: #2d2a24;
+    color: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+  .grand-total .amount {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .btn-add {
+    width: 100%;
+    padding: 14px;
+    background: #c8a97e;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: background 0.2s;
+  }
+  .btn-add:hover { background: #b8986a; }
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: #2d2a24;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: background 0.2s;
+  }
+  .btn-submit:hover { background: #1a1814; }
+  .btn-reset {
+    width: 100%;
+    padding: 10px;
+    background: none;
+    border: 1.5px solid #ddd8d0;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #6b6560;
+    cursor: pointer;
+  }
+  .btn-reset:hover { background: #f0ede8; }
+  .summary-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  .summary-modal.visible { display: flex; }
+  .summary-content {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .summary-content h2 {
+    text-align: center;
+    margin-bottom: 16px;
+    font-size: 20px;
+  }
+  .summary-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+  .summary-item:last-child { border-bottom: none; }
+  .summary-item .s-name { font-weight: 600; }
+  .summary-item .s-detail { font-size: 13px; color: #6b6560; }
+  .summary-item .s-price { font-weight: 600; text-align: right; font-size: 15px; }
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 700;
+    padding-top: 12px;
+    border-top: 2px solid #2d2a24;
+    margin-top: 8px;
+  }
+  .summary-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .summary-actions button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+  .summary-actions .btn-confirm { background: #2d2a24; color: white; }
+  .summary-actions .btn-confirm:hover { background: #1a1814; }
+  .summary-actions .btn-cancel { background: #f0ede8; color: #4a4540; }
+  .summary-actions .btn-cancel:hover { background: #e0dcd4; }
+  .summary-item-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 12px;
+    align-items: center;
+  }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2d2a24;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1000;
+    pointer-events: none;
+  }
+  .toast.visible { opacity: 1; }
+</style>
+</head>
+<body>
+
+<h1>📋 Tempahan Kain</h1>
+<p class="subtitle">Isi borang untuk setiap pesanan</p>
+            <p class="subtitle" style="color: #d4af37; font-weight: 600; margin-top: 4px;">📅 Tempahan dibuka sehingga 30 Jun 2026</p>
+
+<!-- Reference Image -->
+<img src="kain-reference.jpg" alt="Rujukan Kain" class="ref-image" onclick="window.open(this.src)" style="cursor: zoom-in;">
+
+<!-- Price Reference -->
+<div class="price-card">
+  <div class="price-item">
+    <strong>RM49</strong>
+    4m pertama
+  </div>
+  <div class="price-item">
+    <strong>RM11/m</strong>
+    Meter tambahan
+  </div>
+  <div class="price-item">
+    <strong>RM85</strong>
+    Siap jahit (Akhawat)
+  </div>
+  <div class="price-item">
+    <strong>RM80</strong>
+    Siap jahit (Ikhwah)
+  </div>
+</div>
+
+<!-- Size Chart & Guideline Section -->
+<div class="size-chart-toggle" id="sizeChartToggle" onclick="toggleSizeChart()">
+  📏 Size Chart & Guideline — <span style="color:#e8c178;font-size:13px;font-weight:700;">👉 Tekan Sini untuk tengok saiz & panduan meter kain</span> <span id="sizeChartArrow">▼</span>
+</div>
+<div class="size-chart-section" id="sizeChartSection" style="display:none;">
+
+  <!-- Guideline Meter Kain -->
+  <div style="margin-bottom:16px;">
+    <div class="guideline-card">
+      <div class="guideline-title">GUIDELINE METER KAIN <span style="font-size:11px;font-weight:400;color:#9a9490;">(Bidang 45°)</span></div>
+      <div class="guideline-block">
+        <div class="guideline-cat">📌 BAJU KURUNG</div>
+        <div class="guideline-row"><span>SIZE S & M</span><span class="guideline-val">▶ 4M</span></div>
+        <div class="guideline-row"><span>SIZE L & XL</span><span class="guideline-val">▶ 4.5M</span></div>
+        <div class="guideline-row"><span>SIZE 2XL & 3XL</span><span class="guideline-val">▶ 5M</span></div>
+        <div class="guideline-row"><span>SIZE 4XL & 5XL</span><span class="guideline-val">▶ 5.5M</span></div>
+      </div>
+      <div class="guideline-block">
+        <div class="guideline-cat">📌 KEMEJA</div>
+        <div class="guideline-row"><span>SIZE S & M</span><span class="guideline-val">▶ 2.5M</span></div>
+        <div class="guideline-row"><span>SIZE L & XL</span><span class="guideline-val">▶ 3M</span></div>
+        <div class="guideline-row"><span>SIZE 2XL & 3XL</span><span class="guideline-val">▶ 3.5M</span></div>
+        <div class="guideline-row"><span>SIZE 4XL & 5XL</span><span class="guideline-val">▶ 4M</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Size Chart Tabs -->
+  <div class="guideline-divider" style="text-align:center;font-size:12px;color:#9a9490;margin:12px 0;">— Size Charts —</div>
+  <!-- Tab buttons -->
+  <div class="size-tabs">
+    <button class="size-tab active" onclick="switchSizeTab('top', event)">Kurung (TOP)</button>
+    <button class="size-tab" onclick="switchSizeTab('bottom', event)">Kurung (BOTTOM)</button>
+    <button class="size-tab" onclick="switchSizeTab('kemeja', event)">Kemeja</button>
+  </div>
+
+  <!-- TOP Chart -->
+  <div id="sizeTop" class="size-content active">
+    <div class="size-table-wrap">
+      <table class="size-table">
+        <thead>
+          <tr>
+            <th>Size</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>2XL</th><th>3XL</th><th>4XL</th><th>5XL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Shoulder</td><td>14</td><td>14.5</td><td>15</td><td>15.5</td><td>16</td><td>16.5</td><td>18</td><td>18.5</td><td>19</td></tr>
+          <tr><td>Bust</td><td>34</td><td>36</td><td>38</td><td>41</td><td>43</td><td>44</td><td>48</td><td>50</td><td>52</td></tr>
+          <tr><td>Armhole</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td></tr>
+          <tr><td>Sleeve</td><td>22</td><td>22</td><td>22</td><td>23</td><td>23</td><td>23</td><td>23.5</td><td>23.5</td><td>23.5</td></tr>
+          <tr><td>Hip</td><td>38</td><td>40</td><td>42</td><td>45</td><td>47</td><td>48</td><td>52</td><td>54</td><td>56</td></tr>
+          <tr><td>Length</td><td>36</td><td>36</td><td>36</td><td>36</td><td>36</td><td>36</td><td>36</td><td>36</td><td>36</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11px;color:#9a9490;text-align:center;margin-top:6px;">All measurements in inches (")</p>
+  </div>
+
+  <!-- BOTTOM Chart -->
+  <div id="sizeBottom" class="size-content" style="display:none;">
+    <div class="size-table-wrap">
+      <table class="size-table">
+        <thead>
+          <tr>
+            <th>Size</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>2XL</th><th>3XL</th><th>4XL</th><th>5XL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Waist w/o Stretch</td><td>24</td><td>26</td><td>28</td><td>30</td><td>32</td><td>34</td><td>36</td><td>38</td><td>40</td></tr>
+          <tr><td>Waist when stretch</td><td>38</td><td>40</td><td>42</td><td>44</td><td>46</td><td>48</td><td>50</td><td>52</td><td>54</td></tr>
+          <tr><td>Hip</td><td>38</td><td>40</td><td>42</td><td>44</td><td>46</td><td>48</td><td>50</td><td>52</td><td>54</td></tr>
+          <tr><td>Length</td><td>40</td><td>40</td><td>40</td><td>40</td><td>40</td><td>40</td><td>40</td><td>40</td><td>40</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11px;color:#9a9490;text-align:center;margin-top:6px;">All measurements in inches (")</p>
+  </div>
+
+  <!-- KEMEJA Chart -->
+  <div id="sizeKemeja" class="size-content" style="display:none;">
+    <div class="size-table-wrap">
+      <table class="size-table">
+        <thead>
+          <tr>
+            <th>Size</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>2XL</th><th>3XL</th><th>4XL</th><th>5XL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Shoulder</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>21.5</td><td>22</td><td>23</td></tr>
+          <tr><td>Bust</td><td>40</td><td>43</td><td>45</td><td>47</td><td>49</td><td>51</td><td>53</td><td>55</td></tr>
+          <tr><td>Armhole</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>22</td><td>23</td><td>24</td></tr>
+          <tr><td>Sleeve</td><td>23.5</td><td>24</td><td>24.5</td><td>24.5</td><td>25</td><td>25.5</td><td>25.5</td><td>26</td></tr>
+          <tr><td>Collar</td><td>15.5</td><td>17.5</td><td>18</td><td>19</td><td>19.5</td><td>20</td><td>20.5</td><td>21</td></tr>
+          <tr><td>Hip</td><td>38</td><td>41</td><td>43</td><td>45</td><td>47</td><td>49</td><td>51</td><td>53</td></tr>
+          <tr><td>Length</td><td>30</td><td>30</td><td>30.5</td><td>31</td><td>32</td><td>32</td><td>33</td><td>34</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11px;color:#9a9490;text-align:center;margin-top:6px;">All measurements in inches (")</p>
+  </div>
+</div>
+
+<!-- Customer Info (Global) -->
+<div class="order-card" style="border-left: 4px solid #c8a97e;">
+  <div class="order-card-header">
+    <span class="order-number">📋 Maklumat Pemesan</span>
+  </div>
+  <div class="form-group">
+    <label for="globalNama">Nama Pemesanan *</label>
+    <input type="text" id="globalNama" placeholder="cth: Ahmad bin Ali" required>
+  </div>
+  <div class="form-group">
+    <label for="globalPhone">No Telefon *</label>
+    <input type="text" id="globalPhone" placeholder="cth: 012-3456789" required>
+    <div class="field-hint">No telefon pemilik kain (sekiranya tempahan dibuat oleh orang lain)</div>
+  </div>
+  <div class="form-group">
+    <label for="globalKawasan">Kawasan *</label>
+    <select id="globalKawasan" required>
+      <option value="" disabled selected>-- Pilih Kawasan --</option>
+      <option value="Batang Padang">Batang Padang</option>
+      <option value="Teluk Intan">Teluk Intan</option>
+      <option value="Batu Gajah">Batu Gajah</option>
+      <option value="Ipoh">Ipoh</option>
+      <option value="Tambun">Tambun</option>
+      <option value="Perak Tengah">Perak Tengah</option>
+      <option value="Manjung">Manjung</option>
+      <option value="Kuala Kangsar">Kuala Kangsar</option>
+      <option value="Padang Rengas">Padang Rengas</option>
+      <option value="Taiping">Taiping</option>
+      <option value="Hulu Perak">Hulu Perak</option>
+    </select>
+  </div>
+</div>
+
+<!-- Orders Container -->
+<div style="font-size: 14px; font-weight: 600; color: #2d2a24; margin: 16px 0 8px;">🛒 Pesanan Kain</div>
+<div id="ordersContainer"></div>
+
+<button class="btn-add" onclick="addOrder()">+ Tambah Pesanan</button>
+
+<div class="grand-total">
+  <span>Jumlah Keseluruhan</span>
+  <span class="amount">RM<span id="grandTotalDisplay">0.00</span></span>
+</div>
+
+<button class="btn-submit" onclick="showSummary()">📤 Semak &amp; Hantar</button>
+<button class="btn-reset" onclick="resetAll()">⟳ Reset Semua</button>
+
+<!-- Disclaimer -->
+<div class="disclaimer-card">
+  <strong>Disclaimer:</strong> InsyaAllah pembelian pakaian ini tiada paksaan. Sekadar ingin menunjukkan kebersamaan, identiti dan kerjasama dalam organisasi.
+</div>
+
+<!-- Summary Modal -->
+<div class="summary-modal" id="summaryModal">
+  <div class="summary-content">
+    <h2>📋 Ringkasan Pesanan</h2>
+    <div id="summaryOrderId" style="text-align:center;font-size:13px;color:#c8a97e;font-weight:600;margin-bottom:10px;"></div>
+    <div id="summaryItems"></div>
+    <div class="summary-total">
+      <span>Jumlah</span>
+      <span>RM<span id="summaryTotal">0.00</span></span>
+    </div>
+    
+    <!-- Payment Details in Modal -->
+    <div class="payment-card" style="margin-top:16px;">
+      <div class="payment-title">💳 Pembayaran</div>
+      <p class="payment-note">Sila buat bayaran & sertakan slip di bawah.</p>
+      <div class="payment-details">
+        <div class="payment-row"><span class="payment-label">Nama Akaun</span><span class="payment-val">Wanita IKRAM Negeri Perak</span></div>
+        <div class="payment-row"><span class="payment-label">Nama Bank</span><span class="payment-val">Bank Islam Malaysia Berhad</span></div>
+        <div class="payment-row"><span class="payment-label">No Akaun</span><span class="payment-val payment-copy" onclick="copyAccount()">08013010108254 📋</span></div>
+      </div>
+    </div>
+    
+    <!-- Payment Slip Upload -->
+    <div class="slip-upload-section">
+      <label class="slip-upload-label">📎 Sertakan Slip Bayaran</label>
+      <div class="slip-upload-area" id="slipUploadArea" onclick="document.getElementById('slipFile').click()">
+        <input type="file" id="slipFile" accept="image/*" style="display:none;" onchange="handleSlipUpload(event)">
+        <div id="slipPlaceholder">
+          <span style="font-size:28px;">📤</span>
+          <div style="font-size:13px;color:#9a9490;margin-top:4px;">Click untuk upload slip bayaran</div>
+        </div>
+        <img id="slipPreview" style="display:none;width:100%;border-radius:8px;margin-top:8px;">
+      </div>
+    </div>
+
+    <div class="summary-actions">
+      <button class="btn-cancel" onclick="closeSummary()">✏️ Edit</button>
+      <button class="btn-confirm" id="submitBtn" onclick="submitOrder()">✅ Sahkan &amp; Hantar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let orderCount = 0;
+let slipImageBase64 = '';
+
+function handleSlipUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    slipImageBase64 = e.target.result;
+    const preview = document.getElementById('slipPreview');
+    const placeholder = document.getElementById('slipPlaceholder');
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+    document.getElementById('slipUploadArea').style.borderStyle = 'solid';
+    document.getElementById('slipUploadArea').style.borderColor = '#c8a97e';
+  };
+  reader.readAsDataURL(file);
+}
+
+function calcPrice(type, meters) {
+  if (type === 'jahit-akhawat') return 85;
+  if (type === 'jahit-ikhwah') return 80;
+  if (type === 'meter') {
+    if (!meters || meters <= 0) return 0;
+    if (meters <= 4) return 49;
+    return 49 + ((meters - 4) * 11);
+  }
+  return 0;
+}
+
+function calcBreakdown(type, meters) {
+  if (type === 'jahit-akhawat') return { breakdown: 'Siap jahit akhawat', total: 85 };
+  if (type === 'jahit-ikhwah') return { breakdown: 'Siap jahit ikhwah', total: 80 };
+  if (type === 'meter' && meters > 0) {
+    let parts = [];
+    if (meters <= 4) {
+      parts.push(`4m × RM12.25 = RM49`);
+    } else {
+      parts.push(`4m pertama = RM49`);
+      let extra = meters - 4;
+      parts.push(`${extra}m × RM11 = RM${extra * 11}`);
+    }
+    let total = (meters <= 4) ? 49 : 49 + ((meters - 4) * 11);
+    return { breakdown: parts.join('<br>'), total };
+  }
+  return { breakdown: '', total: 0 };
+}
+
+function addOrder(data) {
+  orderCount++;
+  const id = orderCount;
+  const container = document.getElementById('ordersContainer');
+
+  const card = document.createElement('div');
+  card.className = 'order-card';
+  card.id = `order-${id}`;
+  card.innerHTML = `
+    <div class="order-card-header">
+      <span class="order-number">Pesanan #${id}</span>
+      <button class="remove-btn" onclick="removeOrder(${id})" title="Padam">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Jenis Pesanan *</label>
+      <div class="radio-group">
+        <label class="radio-option" onclick="selectType(${id}, 'meter')">
+          <input type="radio" name="type-${id}" value="meter" onchange="selectType(${id}, 'meter')">
+          <div>
+            <div>Beli Kain (By Meter)</div>
+            <div class="desc">Kain putih biasa</div>
+          </div>
+          <span class="price-tag">RM49–</span>
+        </label>
+        <label class="radio-option" onclick="selectType(${id}, 'jahit-akhawat')">
+          <input type="radio" name="type-${id}" value="jahit-akhawat" onchange="selectType(${id}, 'jahit-akhawat')">
+          <div>
+            <div>Siap Jahit Akhawat</div>
+            <div class="desc">Kain + jahit untuk wanita</div>
+          </div>
+          <span class="price-tag">RM85</span>
+        </label>
+        <label class="radio-option" onclick="selectType(${id}, 'jahit-ikhwah')">
+          <input type="radio" name="type-${id}" value="jahit-ikhwah" onchange="selectType(${id}, 'jahit-ikhwah')">
+          <div>
+            <div>Siap Jahit Ikhwah</div>
+            <div class="desc">Kain + jahit untuk lelaki</div>
+          </div>
+          <span class="price-tag">RM80</span>
+        </label>
+      </div>
+    </div>
+    <div class="meter-field" id="meterField-${id}">
+      <label for="meters-${id}">Berapa meter?</label>
+      <div class="meter-row">
+        <input type="number" id="meters-${id}" min="1" step="1" value="4" placeholder="0" oninput="updateOrder(${id})">
+        <span style="font-weight:500;color:#4a4540;">meter</span>
+      </div>
+      <div class="calc-breakdown" id="calc-${id}"></div>
+    </div>
+    <!-- Size field for Akhawat (single size) -->
+    <div class="size-fields" id="sizeFieldsAkhawat-${id}" style="display:none;">
+      <label>Size Kurung *</label>
+      <select id="sizeAkhawat-${id}" onchange="updateOrder(${id})">
+        <option value="" disabled selected>-- Pilih Size --</option>
+        <option>XS</option><option>S</option><option>M</option><option>L</option>
+        <option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option><option>5XL</option>
+      </select>
+    </div>
+    <!-- Size field for Ikhwah (Kemeja) -->
+    <div class="size-fields" id="sizeFieldsIkhwah-${id}" style="display:none;">
+      <label>Size Kemeja *</label>
+      <select id="sizeKemeja-${id}" onchange="updateOrder(${id})">
+        <option value="" disabled selected>-- Pilih Size --</option>
+        <option>S</option><option>M</option><option>L</option>
+        <option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option><option>5XL</option>
+      </select>
+    </div>
+    <div class="order-total" id="orderTotal-${id}">
+      <strong>RM0.00</strong>
+    </div>
+  `;
+  container.appendChild(card);
+
+  if (data) {
+    if (data.type) {
+      selectType(id, data.type, data.meters || 4);
+    }
+  }
+
+  updateGrandTotal();
+}
+
+function selectType(id, type, meters) {
+  const card = document.getElementById(`order-${id}`);
+  card.querySelectorAll('.radio-option').forEach(el => el.classList.remove('selected'));
+  const selected = card.querySelector(`input[name="type-${id}"][value="${type}"]`);
+  if (selected) {
+    selected.checked = true;
+    selected.closest('.radio-option').classList.add('selected');
+  }
+
+  const meterField = document.getElementById(`meterField-${id}`);
+  const akhawatField = document.getElementById(`sizeFieldsAkhawat-${id}`);
+  const ikhwahField = document.getElementById(`sizeFieldsIkhwah-${id}`);
+
+  // Hide all conditional fields first
+  meterField?.classList.remove('visible');
+  if (akhawatField) akhawatField.style.display = 'none';
+  if (ikhwahField) ikhwahField.style.display = 'none';
+
+  if (type === 'meter') {
+    meterField.classList.add('visible');
+    const metersInput = document.getElementById(`meters-${id}`);
+    if (meters) metersInput.value = meters;
+  } else if (type === 'jahit-akhawat') {
+    if (akhawatField) akhawatField.style.display = 'block';
+  } else if (type === 'jahit-ikhwah') {
+    if (ikhwahField) ikhwahField.style.display = 'block';
+  }
+
+  updateOrder(id);
+}
+
+function updateOrder(id) {
+  const metersInput = document.getElementById(`meters-${id}`);
+  const meters = parseFloat(metersInput?.value) || 0;
+  const selected = document.querySelector(`input[name="type-${id}"]:checked`);
+  const type = selected?.value || '';
+  const total = calcPrice(type, meters);
+  const breakdown = calcBreakdown(type, meters);
+
+  const calcDiv = document.getElementById(`calc-${id}`);
+  if (calcDiv && breakdown.breakdown) {
+    calcDiv.innerHTML = breakdown.breakdown + `<div class="total-line">= RM${total.toFixed(2)}</div>`;
+  }
+
+  const totalDiv = document.getElementById(`orderTotal-${id}`);
+  if (totalDiv) {
+    totalDiv.innerHTML = `<strong>RM${total.toFixed(2)}</strong>`;
+  }
+
+  updateGrandTotal();
+}
+
+function removeOrder(id) {
+  const card = document.getElementById(`order-${id}`);
+  if (card) {
+    card.remove();
+    updateGrandTotal();
+    renumberOrders();
+  }
+}
+
+function renumberOrders() {
+  const cards = document.querySelectorAll('.order-card');
+  cards.forEach((card, i) => {
+    card.querySelector('.order-number').textContent = `Pesanan #${i + 1}`;
+  });
+}
+
+function updateGrandTotal() {
+  let total = 0;
+  document.querySelectorAll('.order-card').forEach(card => {
+    const id = card.id.replace('order-', '');
+    if (!id || id === 'undefined') return;
+    const selected = card.querySelector(`input[name="type-${id}"]:checked`);
+    const type = selected?.value || '';
+    const metersInput = document.getElementById(`meters-${id}`);
+    const meters = parseFloat(metersInput?.value) || 0;
+    total += calcPrice(type, meters);
+  });
+  document.getElementById('grandTotalDisplay').textContent = total.toFixed(2);
+}
+
+function showSummary() {
+  const orders = document.querySelectorAll('.order-card');
+  if (orders.length === 0) {
+    showToast('Tambah sekurang-kurangnya satu pesanan dahulu');
+    return;
+  }
+
+  let itemsHtml = '';
+  let grandTotal = 0;
+
+  const globalNama = document.getElementById('globalNama')?.value.trim();
+  const globalPhone = document.getElementById('globalPhone')?.value.trim();
+  const globalKawasan = document.getElementById('globalKawasan')?.value;
+
+  if (!globalNama) {
+    showToast('Sila isi nama pemesan');
+    return;
+  }
+  if (!globalPhone) {
+    showToast('Sila isi no telefon');
+    return;
+  }
+  if (!globalKawasan) {
+    showToast('Sila pilih kawasan');
+    return;
+  }
+
+  orders.forEach((card, i) => {
+    const id = card.id.replace('order-', '');
+    if (!id || id === 'undefined') return;
+
+    const selected = card.querySelector(`input[name="type-${id}"]:checked`);
+    const type = selected?.value || '';
+    const metersInput = document.getElementById(`meters-${id}`);
+    const meters = parseFloat(metersInput?.value) || 0;
+    const total = calcPrice(type, meters);
+    grandTotal += total;
+
+    let typeLabel = '';
+    switch (type) {
+      case 'meter': typeLabel = `Beli kain — ${meters} meter`; break;
+      case 'jahit-akhawat': typeLabel = 'Siap jahit akhawat'; break;
+      case 'jahit-ikhwah': typeLabel = 'Siap jahit ikhwah'; break;
+      default: typeLabel = '(belum pilih)';
+    }
+
+    // Get size info for summary
+    let sizeLabel = '';
+    if (type === 'jahit-akhawat') {
+      const akhawatSize = document.getElementById(`sizeAkhawat-${id}`)?.value || '';
+      if (akhawatSize) sizeLabel = `📏 Size: ${akhawatSize}`;
+    } else if (type === 'jahit-ikhwah') {
+      const kemejaSize = document.getElementById(`sizeKemeja-${id}`)?.value || '';
+      if (kemejaSize) sizeLabel = `📏 Kemeja: ${kemejaSize}`;
+    }
+
+    itemsHtml += `
+      <div class="summary-item">
+        <div class="summary-item-grid">
+          <span class="s-name">Pesanan #${i + 1}</span>
+          <span class="s-price">RM${total.toFixed(2)}</span>
+          <span class="s-detail">${typeLabel}</span>
+          ${sizeLabel ? `<span class="s-detail" style="color:#c8a97e;font-size:12px;">${sizeLabel}</span>` : ''}
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById('summaryItems').innerHTML = itemsHtml;
+  document.getElementById('summaryTotal').textContent = grandTotal.toFixed(2);
+  document.getElementById('summaryOrderId').textContent = '';
+  document.getElementById('summaryModal').classList.add('visible');
+  resetSlipUpload();
+}
+
+function closeSummary() {
+  document.getElementById('summaryModal').classList.remove('visible');
+  resetSlipUpload();
+}
+
+function resetSlipUpload() {
+  slipImageBase64 = '';
+  const preview = document.getElementById('slipPreview');
+  const placeholder = document.getElementById('slipPlaceholder');
+  if (preview) { preview.style.display = 'none'; preview.src = ''; }
+  if (placeholder) placeholder.style.display = 'block';
+  const area = document.getElementById('slipUploadArea');
+  if (area) { area.style.borderStyle = 'dashed'; area.style.borderColor = '#ddd8d0'; }
+  const fileInput = document.getElementById('slipFile');
+  if (fileInput) fileInput.value = '';
+}
+
+function submitOrder() {
+  const orders = [];
+  const globalNama = document.getElementById('globalNama')?.value.trim() || '';
+  const globalPhone = document.getElementById('globalPhone')?.value.trim() || '';
+  const globalKawasan = document.getElementById('globalKawasan')?.value || '';
+
+  document.querySelectorAll('.order-card').forEach(card => {
+    if (card.id === 'customerInfo') return;
+    const id = card.id.replace('order-', '');
+    const selected = card.querySelector(`input[name="type-${id}"]:checked`);
+    const type = selected?.value || '';
+    const meters = parseFloat(document.getElementById(`meters-${id}`)?.value) || 0;
+    const total = calcPrice(type, meters);
+
+    let typeLabel = '';
+    switch (type) {
+      case 'meter': typeLabel = 'By Meter'; break;
+      case 'jahit-akhawat': typeLabel = 'Siap Jahit Akhawat'; break;
+      case 'jahit-ikhwah': typeLabel = 'Siap Jahit Ikhwah'; break;
+    }
+
+    // Get size info
+    let sizeInfo = '';
+    if (type === 'jahit-akhawat') {
+      const akhawatSize = document.getElementById(`sizeAkhawat-${id}`)?.value || '';
+      sizeInfo = `Size: ${akhawatSize}`;
+    } else if (type === 'jahit-ikhwah') {
+      const kemejaSize = document.getElementById(`sizeKemeja-${id}`)?.value || '';
+      sizeInfo = `Kemeja: ${kemejaSize}`;
+    }
+
+    orders.push({ type, typeLabel, meters, total, sizeInfo });
+  });
+
+  const grand = orders.reduce((s, o) => s + o.total, 0);
+  const orderDate = new Date().toLocaleString('ms-MY');
+
+  // Generate Order ID
+  const orderId = 'KAIN-' + Date.now().toString().slice(-8);
+
+  // Format message for WhatsApp / copy
+  let msg = `📋 *TEMPAHAN KAIN*\n🆔 Order ID: ${orderId}\n${orderDate}\n\n`;
+  msg += `*Nama:* ${globalNama}\n`;
+  msg += `📞 *Telefon:* ${globalPhone}\n`;
+  msg += `📍 *Kawasan:* ${globalKawasan}\n\n`;
+  orders.forEach((o, i) => {
+    msg += `*${i + 1}. ${o.typeLabel}*\n`;
+    if (o.type === 'meter') msg += `   Meter: ${o.meters}m\n`;
+    if (o.sizeInfo) msg += `   📏 ${o.sizeInfo}\n`;
+    msg += `   Jumlah: RM${o.total.toFixed(2)}\n\n`;
+  });
+  msg += `━━━━━━━━━━━━━━\n*Jumlah: RM${grand.toFixed(2)}*`;
+
+  // Also copy to clipboard as backup (safe)
+  try { navigator.clipboard?.writeText(msg).catch(() => {}); } catch(e) {}
+
+  // Submit to Google Sheets (using form-encoded, works with no-cors)
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = '⏳ Menghantar...';
+
+  const sheetData = JSON.stringify({
+    orderId: orderId,
+    nama: globalNama,
+    telefon: globalPhone,
+    kawasan: globalKawasan,
+    tarikh: orderDate,
+    jumlah: grand.toFixed(2),
+    orders: orders.map(o => ({
+      type: o.typeLabel + (o.type === 'meter' ? ` (${o.meters}m)` : ''),
+      saiz: o.sizeInfo || '',
+      jumlah: o.total.toFixed(2)
+    })),
+    slipImage: slipImageBase64 || ''
+  });
+
+  fetch('https://script.google.com/macros/s/AKfycbx94eW6Sr-R22ux6mBk94f1EZtJWcW57eKENpHhdkHwUtYiQ2u22G4QsEZSccniFsWnkA/exec', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: sheetData
+  })
+  .then(() => {
+    showToast('✅ Pesanan dihantar! Order ID: ' + orderId);
+    document.getElementById('summaryOrderId').textContent = '🆔 Order ID: ' + orderId;
+    try { navigator.clipboard?.writeText(msg).catch(() => {}); } catch(e) {}
+    closeSummary();
+    setTimeout(() => {
+      resetAll();
+      showToast('✅ Ringkasan disalin ke clipboard untuk WhatsApp');
+    }, 1500);
+  })
+  .catch(err => {
+    showToast('⚠️ Gagal hantar. Salinan ke clipboard...');
+    try { navigator.clipboard?.writeText(msg).then(() => {
+      showToast('✅ Ringkasan disalin! Boleh paste ke WhatsApp');
+    }).catch(() => {}); } catch(e) {}
+  })
+  .finally(() => {
+    submitBtn.disabled = false;
+    submitBtn.textContent = '✅ Sahkan & Hantar';
+  });
+}
+
+function resetAll() {
+  if (!confirm('Reset semua pesanan?')) return;
+  document.getElementById('ordersContainer').innerHTML = '';
+  orderCount = 0;
+  document.getElementById('globalNama').value = '';
+  document.getElementById('globalPhone').value = '';
+  document.getElementById('globalKawasan').value = '';
+  updateGrandTotal();
+  addOrder();
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('visible');
+  setTimeout(() => toast.classList.remove('visible'), 3000);
+}
+
+function copyAccount() {
+  navigator.clipboard.writeText('08013010108254').then(() => {
+    showToast('✅ No akaun disalin!');
+  }).catch(() => {
+    showToast('No akaun: 08013010108254');
+  });
+}
+
+// Size Chart toggle & tabs
+function toggleSizeChart() {
+  const section = document.getElementById('sizeChartSection');
+  const arrow = document.getElementById('sizeChartArrow');
+  if (section.style.display === 'none') {
+    section.style.display = 'block';
+    arrow.textContent = '▲';
+  } else {
+    section.style.display = 'none';
+    arrow.textContent = '▼';
+  }
+}
+
+function switchSizeTab(tab, e) {
+  document.querySelectorAll('.size-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.size-content').forEach(c => c.classList.remove('active'));
+  if (tab === 'top') {
+    document.getElementById('sizeTop').style.display = 'block';
+    document.getElementById('sizeBottom').style.display = 'none';
+    document.getElementById('sizeKemeja').style.display = 'none';
+  } else if (tab === 'bottom') {
+    document.getElementById('sizeTop').style.display = 'none';
+    document.getElementById('sizeBottom').style.display = 'block';
+    document.getElementById('sizeKemeja').style.display = 'none';
+  } else {
+    document.getElementById('sizeTop').style.display = 'none';
+    document.getElementById('sizeBottom').style.display = 'none';
+    document.getElementById('sizeKemeja').style.display = 'block';
+  }
+  e.target.classList.add('active');
+}
+
+// Start with one empty order
+addOrder();
+</script>
+
+</body>
+</html>
