@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Tempahan Kain</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a1e;
+    color: #e0ddd7;
+    padding: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 22px; color: #e8c178; margin-bottom: 4px; }
+  .subtitle { color: #8a8680; font-size: 13px; margin-bottom: 16px; }
+  .stats-row {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: #26262b; border-radius: 10px;
+    padding: 12px 16px; flex: 1; min-width: 100px;
+  }
+  .stat-card .num { font-size: 24px; font-weight: 700; color: #e8c178; }
+  .stat-card .label { font-size: 12px; color: #8a8680; }
+
+  .filters {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;
+    align-items: center;
+  }
+  .filters input, .filters select {
+    background: #26262b; border: 1px solid #3a3a40;
+    color: #e0ddd7; padding: 8px 12px; border-radius: 8px;
+    font-size: 13px;
+  }
+  .filters input { flex: 1; min-width: 150px; }
+  .filters select { min-width: 90px; }
+  .filters button {
+    background: #e8c178; color: #1a1a1e; border: none;
+    padding: 8px 16px; border-radius: 8px; font-weight: 600;
+    cursor: pointer; font-size: 13px;
+  }
+  .filters button:hover { opacity: 0.85; }
+
+  .refresh-btn {
+    background: transparent; border: 1px solid #3a3a40;
+    color: #e0ddd7; padding: 8px 16px; border-radius: 8px;
+    cursor: pointer; font-size: 13px; margin-left: auto;
+  }
+  .refresh-btn:hover { background: #26262b; }
+
+  .table-wrap {
+    overflow-x: auto; border-radius: 10px;
+    background: #26262b;
+  }
+  table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  thead { background: #2f2f36; }
+  th {
+    padding: 10px 8px; text-align: left; color: #e8c178;
+    font-weight: 600; white-space: nowrap; font-size: 12px;
+    border-bottom: 1px solid #3a3a40;
+  }
+  td {
+    padding: 10px 8px; border-bottom: 1px solid #333338;
+    vertical-align: top; 
+  }
+  tr:hover td { background: #2a2a30; }
+  .order-id { color: #e8c178; font-weight: 600; cursor: pointer; font-size: 11px; }
+  .order-id:hover { text-decoration: underline; }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-pending { background: #3d3520; color: #e8c178; }
+  .badge-confirmed { background: #1a3a2a; color: #4ade80; }
+  .badge-rejected { background: #3a1a1a; color: #f87171; }
+  .slip-link {
+    color: #60a5fa; text-decoration: none; font-size: 12px;
+    cursor: pointer;
+  }
+  .slip-link:hover { text-decoration: underline; }
+  .action-btn {
+    padding: 4px 10px; border: none; border-radius: 4px;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    margin: 0 2px;
+  }
+  .btn-confirm { background: #166534; color: #bbf7d0; }
+  .btn-confirm:hover { background: #15803d; }
+  .btn-reject { background: #7f1d1d; color: #fecaca; }
+  .btn-reject:hover { background: #991b1b; }
+
+  /* Slip Modal */
+  .modal-overlay {
+    display: none; position: fixed; z-index: 999;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); justify-content: center;
+    align-items: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: #26262b; border-radius: 12px; padding: 20px;
+    max-width: 500px; width: 90%; max-height: 85vh; overflow: auto;
+  }
+  .modal-box h2 { color: #e8c178; margin-bottom: 8px; font-size: 16px; }
+  .modal-box .close {
+    float: right; cursor: pointer; color: #8a8680; font-size: 20px;
+  }
+  .modal-box .close:hover { color: #e0ddd7; }
+  .modal-box img {
+    width: 100%; border-radius: 8px; margin-top: 8px;
+  }
+  .modal-box .slip-details {
+    margin-top: 12px; font-size: 13px; line-height: 1.6;
+  }
+  .modal-box .slip-details strong { color: #e8c178; }
+
+  /* Loading */
+  .loading {
+    text-align: center; padding: 40px; color: #8a8680;
+  }
+  .loading .spin {
+    display: inline-block; width: 32px; height: 32px;
+    border: 3px solid #3a3a40; border-top: 3px solid #e8c178;
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    margin-bottom: 10px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .link-to-form {
+    text-align: left; margin-bottom: 12px;
+  }
+  .link-to-form a {
+    color: #60a5fa; font-size: 13px; text-decoration: none;
+  }
+  .link-to-form a:hover { text-decoration: underline; }
+
+  .no-orders { text-align: center; padding: 40px; color: #8a8680; }
+  .email-cell { font-size: 12px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  
+  /* Pending count badge on tab */
+  .pending-count { font-size: 11px; color: #e8c178; }
+
+  /* Slip placeholder */
+  .no-slip { color: #5a5650; font-size: 11px; font-style: italic; }
+
+  @media (max-width: 768px) {
+    .stats-row .stat-card { min-width: calc(50% - 5px); }
+    .filters { flex-direction: column; }
+    .filters input { width: 100%; }
+    .filters button, .refresh-btn { width: 100%; }
+    table { font-size: 12px; }
+    th, td { padding: 6px 4px; }
+    .action-btn { font-size: 10px; padding: 3px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>👑 Admin — Tempahan Kain</h1>
+<p class="subtitle">Urus & sahkan pesanan dari borang</p>
+
+<div class="link-to-form">
+  <a href="kain-order-form.html" target="_blank">📋 Buka borang tempahan →</a>
+</div>
+
+<div class="stats-row" id="statsRow">
+  <div class="stat-card"><div class="num" id="statTotal">0</div><div class="label">Jumlah Order</div></div>
+  <div class="stat-card"><div class="num" id="statPending">0</div><div class="label">Menunggu</div></div>
+  <div class="stat-card"><div class="num" id="statConfirmed">0</div><div class="label">Disahkan</div></div>
+  <div class="stat-card"><div class="num" id="statRejected">0</div><div class="label">Ditolak</div></div>
+  <div class="stat-card"><div class="num" id="statTotalItems">0</div><div class="label">Jumlah Item</div></div>
+</div>
+
+<div class="filters">
+  <input type="text" id="searchInput" placeholder="🔍 Cari nama / ID / telefon..." oninput="filterTable()">
+  <select id="statusFilter" onchange="filterTable()">
+    <option value="all">Semua Status</option>
+    <option value="Menunggu">Menunggu</option>
+    <option value="Disahkan">Disahkan</option>
+    <option value="Ditolak">Ditolak</option>
+  </select>
+  <button onclick="loadOrders()">🔄 Muat Semula</button>
+</div>
+
+<div class="table-wrap" id="tableWrap">
+  <div class="loading" id="loadingIndicator">
+    <div class="spin"></div>
+    <div>Memuatkan data...</div>
+  </div>
+</div>
+
+<!-- Slip Modal -->
+<div class="modal-overlay" id="slipModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeSlip()">&times;</span>
+    <h2 id="slipOrderId">-</h2>
+    <div class="slip-details" id="slipDetails"></div>
+    <div id="slipImage"></div>
+  </div>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx94eW6Sr-R22ux6mBk94f1EZtJWcW57eKENpHhdkHwUtYiQ2u22G4QsEZSccniFsWnkA/exec';
+const SHEET_ID = '1wgXM33U_-9moC1qyrJpEoeWdlU4XEwaN0tB9UlPFt1g';
+
+let allOrders = [];
+
+async function loadOrders() {
+  document.getElementById('loadingIndicator').style.display = 'block';
+  document.querySelector('#tableWrap table')?.remove();
+
+  try {
+    // Fetch via Apps Script — returns JSON
+    const resp = await fetch(APPS_SCRIPT_URL + '?action=getOrders&sheet=' + SHEET_ID, { method: 'GET', cache: 'no-store' });
+    const text = await resp.text();
+    let data;
+    try { data = JSON.parse(text); } catch(e) {
+      // Try parsing from text/html response
+      const match = text.match(/<pre[^>]*>([\s\S]*?)<\/pre>/i);
+      if (match) data = JSON.parse(match[1]);
+      else throw new Error('Cannot parse response');
+    }
+    allOrders = data.orders || data.data || [];
+    renderTable();
+    updateStats();
+  } catch(e) {
+    document.getElementById('loadingIndicator').innerHTML = `
+      <div style="color:#f87171;font-size:16px;margin-bottom:8px;">❌ Gagal muat data</div>
+      <div style="font-size:13px;color:#8a8680;">${e.message}</div>
+      <button onclick="loadOrders()" style="margin-top:12px;background:#e8c178;color:#1a1a1e;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;">Cuba Lagi</button>
+    `;
+  }
+}
+
+function renderTable() {
+  const wrap = document.getElementById('tableWrap');
+  const loading = document.getElementById('loadingIndicator');
+  loading.style.display = 'none';
+
+  if (allOrders.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'no-orders';
+    empty.innerHTML = '📭 Tiada order lagi.';
+    wrap.appendChild(empty);
+    return;
+  }
+
+  const table = document.createElement('table');
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Tarikh</th>
+        <th>Nama</th>
+        <th>Telefon</th>
+        <th>Kawasan</th>
+        <th>Item</th>
+        <th>Saiz</th>
+        <th>Jumlah Item</th>
+        <th>Jumlah Total</th>
+        <th>Slip</th>
+        <th>Status</th>
+        <th>Tindakan</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  `;
+  wrap.appendChild(table);
+  filterTable();
+}
+
+function filterTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const statusFilter = document.getElementById('statusFilter').value;
+  const tbody = document.getElementById('tableBody');
+  if (!tbody) return;
+
+  const filtered = allOrders.filter(o => {
+    const matchSearch = !search ||
+      (o.nama || '').toLowerCase().includes(search) ||
+      (o.orderId || '').toLowerCase().includes(search) ||
+      (o.telefon || '').includes(search);
+    const matchStatus = statusFilter === 'all' ||
+      (o.status || 'Menunggu') === statusFilter;
+    return matchSearch && matchStatus;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="12" class="no-orders">Tiada padanan</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(o => {
+    const status = o.status || 'Menunggu';
+    const statusClass = status === 'Menunggu' ? 'badge-pending' :
+      status === 'Disahkan' ? 'badge-confirmed' : 'badge-rejected';
+    const hasSlip = o.slip && o.slip.startsWith('data:image');
+    const slipHtml = hasSlip
+      ? `<a class="slip-link" onclick="viewSlip('${o.orderId}')">📷 Lihat</a>`
+      : o.slip ? `<a class="slip-link" onclick="viewSlip('${o.orderId}')">📎 Lihat</a>` : '<span class="no-slip">—</span>';
+
+    return `<tr>
+      <td><span class="order-id" onclick="copyOrderId('${o.orderId}')" title="Copy ID">${o.orderId}</span></td>
+      <td style="white-space:nowrap;font-size:11px;">${o.tarikh || ''}</td>
+      <td><strong>${o.nama || ''}</strong></td>
+      <td>${o.telefon || ''}</td>
+      <td>${o.kawasan || ''}</td>
+      <td>${o.item || ''}</td>
+      <td>${o.saiz || '—'}</td>
+      <td style="text-align:center;">${o.jumlahItem || '1'}</td>
+      <td style="white-space:nowrap;"><strong>RM${(o.jumlahTotal || '0')}</strong></td>
+      <td>${slipHtml}</td>
+      <td><span class="badge ${statusClass}">${status}</span></td>
+      <td>${status === 'Menunggu' ? `
+        <button class="action-btn btn-confirm" onclick="updateStatus('${o.rowIndex || o.orderId}','Disahkan','${o.nama || ''}')">✅</button>
+        <button class="action-btn btn-reject" onclick="updateStatus('${o.rowIndex || o.orderId}','Ditolak','${o.nama || ''}')">❌</button>
+      ` : status === 'Disahkan' ? `
+        <button class="action-btn btn-reject" onclick="updateStatus('${o.rowIndex || o.orderId}','Ditolak','${o.nama || ''}')">❌</button>
+      ` : status === 'Ditolak' ? `
+        <button class="action-btn btn-confirm" onclick="updateStatus('${o.rowIndex || o.orderId}','Disahkan','${o.nama || ''}')">✅</button>
+      ` : ''}</td>
+    </tr>`;
+  }).join('');
+}
+
+function updateStats() {
+  const total = allOrders.length;
+  const pending = allOrders.filter(o => (o.status || 'Menunggu') === 'Menunggu').length;
+  const confirmed = allOrders.filter(o => o.status === 'Disahkan').length;
+  const rejected = allOrders.filter(o => o.status === 'Ditolak').length;
+  const totalItems = allOrders.reduce((s, o) => s + parseInt(o.jumlahItem || 1), 0);
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statConfirmed').textContent = confirmed;
+  document.getElementById('statRejected').textContent = rejected;
+  document.getElementById('statTotalItems').textContent = totalItems;
+}
+
+let slipCache = {};
+function viewSlip(orderId) {
+  const order = allOrders.find(o => o.orderId === orderId);
+  if (!order || !order.slip) return;
+  document.getElementById('slipOrderId').textContent = orderId;
+  document.getElementById('slipDetails').innerHTML = `
+    <strong>Nama:</strong> ${order.nama || ''}<br>
+    <strong>Telefon:</strong> ${order.telefon || ''}<br>
+    <strong>Item:</strong> ${order.item || ''}<br>
+    <strong>Jumlah:</strong> RM${order.jumlahTotal || ''}
+  `;
+  const imgDiv = document.getElementById('slipImage');
+  if (order.slip.startsWith('data:image')) {
+    imgDiv.innerHTML = `<img src="${order.slip}" alt="Slip Resit">`;
+  } else {
+    imgDiv.innerHTML = `<div style="background:#1e1e23;border-radius:8px;padding:12px;word-break:break-all;font-size:11px;color:#8a8680;">${order.slip}</div>`;
+  }
+  document.getElementById('slipModal').classList.add('active');
+}
+
+function closeSlip() {
+  document.getElementById('slipModal').classList.remove('active');
+}
+
+function copyOrderId(id) {
+  navigator.clipboard?.writeText(id).catch(() => {});
+}
+
+async function updateStatus(rowKey, newStatus, nama) {
+  if (!confirm(`Tukar status ${nama} kepada "${newStatus}"?`)) return;
+  try {
+    const resp = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'updateStatus', rowKey, status: newStatus })
+    });
+    // no-cors = opaque, can't read response
+    alert(`✅ Status ${nama} → ${newStatus}`);
+    loadOrders();
+  } catch(e) {
+    alert('❌ Gagal update status');
+  }
+}
+
+// Click outside modal to close
+document.getElementById('slipModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSlip();
+});
+
+// Load on start
+loadOrders();
+</script>
+</body>
+</html>
