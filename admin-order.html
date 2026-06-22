@@ -212,7 +212,7 @@ async function fetchOrders() {
   tbody.innerHTML = '';
 
   try {
-    // Fetch from published Google Sheet as CSV
+    // Fetch from published Google Sheet as CSV (no header row in sheet)
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&tq=&sheet=${encodeURIComponent('Sheet1')}`;
     const resp = await fetch(url, { cache: 'no-store' });
 
@@ -221,7 +221,7 @@ async function fetchOrders() {
     const csvText = await resp.text();
     const rows = parseCSV(csvText);
 
-    if (rows.length <= 1) {
+    if (rows.length === 0) {
       loading.innerHTML = '📭 Tiada data tempahan.';
       document.getElementById('statsRow').innerHTML = '';
       return;
@@ -285,12 +285,13 @@ function parseCSV(text) {
 
 function renderTable(rows) {
   const tbody = document.getElementById('ordersBody');
-  const headers = rows[0];
-  const data = rows.slice(1);
+  // All rows are data — no header row
+  const data = rows;
   const statusMap = loadStatusMap();
 
   tbody.innerHTML = data.map((row, idx) => {
-    const orderId = row[0] || '-';
+    // Support both old format (KAIN- prefix in col 0) and old data (date in col 0)
+    const orderId = (row[0] || '').startsWith('KAIN-') ? row[0] : `LEGACY-${idx + 1}`;
     const tarikh = row[1] || '-';
     const nama = row[2] || '-';
     const phone = row[3] || '-';
@@ -337,7 +338,7 @@ function renderTable(rows) {
 }
 
 function renderStats(rows) {
-  const data = rows.slice(1);
+  const data = rows;
   const statusMap = loadStatusMap();
   const total = data.length;
   const pending = Object.values(statusMap).filter(s => s === 'pending').length;
