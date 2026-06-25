@@ -551,21 +551,15 @@
 <h1>📋 Tempahan Kain</h1>
 <p class="subtitle">Isi borang untuk setiap pesanan</p>
 <p class="subtitle" style="color: #d4af37; font-weight: 600; margin-top: 4px;">📅 Tempahan dibuka sehingga 30 Jun 2026</p>
-<div style="text-align:right;margin-bottom:8px;font-size:11px;">
- 
-</div>
+<!-- Admin link removed -->
 <!-- Reference Image -->
 <img src="kain-reference.jpg" alt="Rujukan Kain" class="ref-image" onclick="window.open(this.src)" style="cursor: zoom-in;">
 
 <!-- Price Reference -->
 <div class="price-card">
   <div class="price-item">
-    <strong>RM49</strong>
-    4m pertama
-  </div>
-  <div class="price-item">
-    <strong>RM11/m</strong>
-    Meter tambahan
+    <strong>RM11/m + RM5</strong>
+    Kain + kos pengurusan
   </div>
   <div class="price-item">
     <strong>RM85</strong>
@@ -801,8 +795,7 @@ function calcPrice(type, meters) {
   if (type === 'jahit-ikhwah') return 80;
   if (type === 'meter') {
     if (!meters || meters <= 0) return 0;
-    if (meters <= 4) return 49;
-    return 49 + ((meters - 4) * 11);
+    return (meters * 11) + 5; // RM11/m + RM5 kos pengurusan
   }
   return 0;
 }
@@ -811,15 +804,11 @@ function calcBreakdown(type, meters) {
   if (type === 'jahit-akhawat') return { breakdown: 'Siap jahit akhawat', total: 85 };
   if (type === 'jahit-ikhwah') return { breakdown: 'Siap jahit ikhwah', total: 80 };
   if (type === 'meter' && meters > 0) {
-    let parts = [];
-    if (meters <= 4) {
-      parts.push(`4m × RM12.25 = RM49`);
-    } else {
-      parts.push(`4m pertama = RM49`);
-      let extra = meters - 4;
-      parts.push(`${extra}m × RM11 = RM${extra * 11}`);
-    }
-    let total = (meters <= 4) ? 49 : 49 + ((meters - 4) * 11);
+    let parts = [
+      `${meters}m × RM11 = RM${meters * 11}`,
+      `Kos pengurusan = RM5`
+    ];
+    let total = (meters * 11) + 5;
     return { breakdown: parts.join('<br>'), total };
   }
   return { breakdown: '', total: 0 };
@@ -846,7 +835,7 @@ function addOrder(data) {
           <div>
             <div>Beli Kain (By Meter)</div>
           </div>
-          <span class="price-tag">RM49+</span>
+          <span class="price-tag">RM11/m + RM5</span>
         </label>
         <label class="radio-option" onclick="selectType(${id}, 'jahit-akhawat')">
           <input type="radio" name="type-${id}" value="jahit-akhawat" onchange="selectType(${id}, 'jahit-akhawat')">
@@ -1128,7 +1117,11 @@ function submitOrder() {
   msg += `📍 *Kawasan:* ${globalKawasan}\n\n`;
   orders.forEach((o, i) => {
     msg += `*${i + 1}. ${o.typeLabel}*\n`;
-    if (o.type === 'meter') msg += `   Meter: ${o.meters}m\n`;
+    if (o.type === 'meter') {
+      msg += `   Meter: ${o.meters}m\n`;
+      const mgmtCost = 5;
+      msg += `   (${o.meters}m × RM11) + RM${mgmtCost} kos pengurusan\n`;
+    }
     if (o.sizeInfo) msg += `   📏 ${o.sizeInfo}\n`;
     msg += `   Jumlah: RM${o.total.toFixed(2)}\n\n`;
   });
