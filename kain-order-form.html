@@ -858,7 +858,7 @@ function addOrder(data) {
     <div class="meter-field" id="meterField-${id}">
       <label for="meters-${id}">Berapa meter?</label>
       <div class="meter-row">
-        <input type="number" id="meters-${id}" min="1" step="1" value="4" placeholder="0" oninput="updateOrder(${id})">
+        <input type="number" id="meters-${id}" min="2.5" step="0.5" value="2.5" placeholder="0" oninput="updateOrder(${id})">
         <span style="font-weight:500;color:#4a4540;">meter</span>
       </div>
       <div class="calc-breakdown" id="calc-${id}"></div>
