@@ -314,7 +314,9 @@ function renderTable(rows) {
 
     let slipHtml;
     if (slipBase64 && slipBase64.length > 20) {
-      slipHtml = `<img class="slip-thumb" src="data:image/jpeg;base64,${slipBase64}" onclick="showSlip('data:image/jpeg;base64,${slipBase64}')" alt="Resit">`;
+      // If already data: URI, use raw; else prepend base64 prefix
+      let imgSrc = slipBase64.startsWith('data:') ? slipBase64 : 'data:image/jpeg;base64,' + slipBase64;
+      slipHtml = `<img class="slip-thumb" src="${imgSrc}" onclick="showSlip('${imgSrc}')" alt="Resit" onerror="this.style.display='none'">`;
     } else if (slipBase64 && slipBase64.startsWith('http')) {
       slipHtml = `<img class="slip-thumb" src="${slipBase64}" onclick="showSlip('${slipBase64}')" alt="Resit">`;
     } else if (slipBase64 && slipBase64.length > 5) {
